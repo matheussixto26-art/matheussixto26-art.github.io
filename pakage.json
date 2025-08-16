@@ -1,1 +1,10 @@
-
+{
+  "name": "automator-sala-futuro",
+  "version": "1.0.0",
+  "description": "Automatizador com IA para redações da Sala do Futuro",
+  "main": "api/login.js",
+  "dependencies": {
+    "axios": "^1.7.2",
+    "@google/generative-ai": "^0.15.0"
+  }
+}
