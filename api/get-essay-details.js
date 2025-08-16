@@ -31,7 +31,6 @@ module.exports = async (req, res) => {
             }
         });
 
-        // Filtra e retorna apenas os dados que vamos usar
         const details = {
             taskContent: response.data.taskContent,
             supportText: response.data.supportText,
