@@ -1,9 +1,8 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
-// Pega a chave da API da variável de ambiente que configuramos no Vercel
+// Pega a chave da API da variável de ambiente que configuramos no Vercel (MÉTODO SEGURO)
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-// Função para limpar o HTML e extrair só o texto puro
 function stripHtml(html){
   if (!html) return '';
   return html.replace(/<[^>]*>?/gm, ' ').replace(/\s\s+/g, ' ').trim();
