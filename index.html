@@ -7,17 +7,21 @@
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #121212; color: #e0e0e0; margin: 0; padding: 20px; box-sizing: border-box; }
         .container { width: 100%; max-width: 800px; margin: auto; background-color: #1e1e1e; padding: 25px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5); }
-        h1, h2 { text-align: center; color: #bb86fc; margin-top: 0; }
+        h1, h2, h3 { text-align: center; color: #bb86fc; margin-top: 0; }
         button { width: 100%; padding: 12px; border: none; border-radius: 4px; background-color: #bb86fc; color: #121212; font-size: 16px; font-weight: bold; cursor: pointer; transition: background-color 0.3s; margin-top: 10px; }
         button:disabled { background-color: #555; cursor: not-allowed; }
         .button-secondary { background-color: #03dac6; }
+        input { width: 100%; padding: 10px; border: 1px solid #444; border-radius: 4px; background-color: #333; color: #e0e0e0; box-sizing: border-box; margin-bottom: 10px;}
         #status, #submissionStatus { text-align: center; margin-top: 15px; font-style: italic; min-height: 20px; }
         #essay-section { display: none; margin-top: 30px; border-top: 1px solid #444; padding-top: 20px; }
         #essayList { list-style: none; padding: 0; }
         #essayList li { background-color: #2c2c2c; padding: 10px 15px; margin-bottom: 5px; border-radius: 4px; cursor: pointer; border-left: 4px solid #bb86fc; transition: background-color 0.2s; }
         #essayList li.selected { background-color: #bb86fc; color: #121212; font-weight: bold; }
         #prompt-display { margin-top: 20px; padding: 15px; background-color: #2c2c2c; border-radius: 4px; border: 1px solid #444; max-height: 300px; overflow-y: auto; display: none; }
-        #prompt-display a { color: #8ab4f8; }
+        /* ESTILO DA CAIXA DE DEBUG */
+        #debug-section { margin-top: 30px; border: 2px dashed #ffab00; padding: 15px; border-radius: 8px; }
+        #debug-section h3 { color: #ffab00; }
+        #debug-section pre { background-color: #000; padding: 10px; border-radius: 4px; white-space: pre-wrap; word-wrap: break-word; max-height: 200px; overflow-y: auto; font-size: 12px; }
     </style>
 </head>
 <body>
@@ -41,8 +45,13 @@
                 <textarea id="essayText" placeholder="Selecione uma redação para ver a proposta e gerar o texto..." style="min-height: 250px;"></textarea>
             </div>
             <button id="generateEssayButton" class="button-secondary" disabled>Gerar Redação com IA 🤖</button>
-            <button id="submitEssayButton" disabled>Enviar Redação (como Rascunho)</button>
+            <button id="submitEssayButton" disabled>Salvar Redação como Rascunho</button>
             <p id="submissionStatus"></p>
+        </div>
+
+        <div id="debug-section" class="hidden">
+            <h3>🔍 MODO DEBUG 🔍</h3>
+            <div id="debug-output"></div>
         </div>
     </div>
 
@@ -50,15 +59,24 @@
         let tokenB = null;
         let essays = [];
         let selectedTask = { id: null, details: null };
+        const debugOutput = document.getElementById('debug-output');
+        const debugSection = document.getElementById('debug-section');
+
+        // NOVA FUNÇÃO DE DEBUG para mostrar o que está acontecendo
+        function updateDebug(title, data) {
+            debugOutput.innerHTML += `<h4>${title}</h4><pre>${JSON.stringify(data, null, 2)}</pre>`;
+        }
 
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
+            debugSection.classList.remove('hidden');
+            debugOutput.innerHTML = ''; // Limpa o debug a cada login
             const statusEl = document.getElementById('status');
             statusEl.textContent = 'Conectando...';
             try {
                 const res = await fetch('/api/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ user: e.target.user.value, senha: e.target.senha.value }) });
                 const data = await res.json();
-                if (!res.ok) throw new Error(data.error);
+                if (!res.ok) throw new Error(data.error || 'Erro desconhecido');
                 
                 tokenB = data.tokenB;
                 essays = data.tarefas; 
@@ -73,6 +91,8 @@
             const essayList = document.getElementById('essayList');
             const pendingEssays = essays.filter(t => t.is_essay === true && t.answer_status !== 'pending');
             
+            updateDebug("1. Redações Pendentes Encontradas:", pendingEssays.map(e => ({id: e.id, title: e.title, answer_id: e.answer_id, publication_target: e.publication_target})));
+
             essaySection.style.display = 'block';
             if (pendingEssays.length === 0) {
                 essayList.innerHTML = '<li>Nenhuma redação pendente encontrada.</li>';
@@ -91,6 +111,8 @@
             const taskData = essays.find(t => t.id == taskId);
             if (!taskData) { alert('Erro: dados da tarefa não encontrados.'); return; }
 
+            updateDebug("2. Dados da Tarefa Selecionada (do login inicial):", taskData);
+
             const answerId = taskData.answer_id;
             const publicationTarget = taskData.publication_target;
 
@@ -98,9 +120,6 @@
             document.getElementById('generateEssayButton').disabled = true;
             document.getElementById('submitEssayButton').disabled = true;
             const statusEl = document.getElementById('submissionStatus');
-            const promptDisplay = document.getElementById('prompt-display');
-            
-            promptDisplay.style.display = 'none';
             statusEl.textContent = 'Buscando proposta completa... 📚';
 
             try {
@@ -113,17 +132,21 @@
                 if (!res.ok) throw new Error(details.error || 'Não foi possível carregar os detalhes.');
                 
                 selectedTask.details = details;
+                updateDebug("3. Resposta de /api/get-essay-details (a prévia completa):", details);
+
                 statusEl.textContent = 'Proposta carregada! Clique para gerar com a IA.';
-                promptDisplay.style.display = 'block';
-                promptDisplay.innerHTML = `<h3>Proposta e Coletânea:</h3>${details.taskContent}`;
                 document.getElementById('generateEssayButton').disabled = false;
             } catch (err) {
                 statusEl.textContent = `Falha ao buscar detalhes: ${err.message}`;
+                updateDebug("ERRO ao buscar detalhes:", { error: err.message });
             }
         }
 
         document.getElementById('generateEssayButton').addEventListener('click', async () => {
              if (!selectedTask.id || !selectedTask.details) return;
+            
+            updateDebug("4. Enviando estes dados para a IA (/api/generate-essay):", { promptData: selectedTask.details });
+
             const statusEl = document.getElementById('submissionStatus');
             const genButton = document.getElementById('generateEssayButton');
             statusEl.textContent = 'IA escrevendo... 🤖⏳';
@@ -142,6 +165,7 @@
             }
         });
 
+        // Lógica de envio (sem debug extra por enquanto)
         document.getElementById('submitEssayButton').addEventListener('click', async () => {
             const essayText = document.getElementById('essayText').value;
             const statusEl = document.getElementById('submissionStatus');
@@ -162,4 +186,4 @@
         });
     </script>
 </body>
-                                          </html>
+</html>
