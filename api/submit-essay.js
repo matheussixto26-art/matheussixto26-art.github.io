@@ -12,7 +12,6 @@ module.exports = async (req, res) => {
             return res.status(400).json({ error: 'TokenB, taskId e essayText são obrigatórios.' });
         }
         
-        // Usando o endpoint que já confirmamos que salva como rascunho
         const apiUrl = `https://edusp-api.ip.tv/tms/task/${taskId}/essay-check`;
 
         const payload = {
