@@ -1,165 +1,83 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Automatizador IA PRO - Sala do Futuro</title>
-    <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #121212; color: #e0e0e0; margin: 0; padding: 20px; box-sizing: border-box; }
-        .container { width: 100%; max-width: 800px; margin: auto; background-color: #1e1e1e; padding: 25px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5); }
-        h1, h2 { text-align: center; color: #bb86fc; margin-top: 0; }
-        button { width: 100%; padding: 12px; border: none; border-radius: 4px; background-color: #bb86fc; color: #121212; font-size: 16px; font-weight: bold; cursor: pointer; transition: background-color 0.3s; margin-top: 10px; }
-        button:disabled { background-color: #555; cursor: not-allowed; }
-        .button-secondary { background-color: #03dac6; }
-        #status, #submissionStatus { text-align: center; margin-top: 15px; font-style: italic; min-height: 20px; }
-        #essay-section { display: none; margin-top: 30px; border-top: 1px solid #444; padding-top: 20px; }
-        #essayList { list-style: none; padding: 0; }
-        #essayList li { background-color: #2c2c2c; padding: 10px 15px; margin-bottom: 5px; border-radius: 4px; cursor: pointer; border-left: 4px solid #bb86fc; transition: background-color 0.2s; }
-        #essayList li.selected { background-color: #bb86fc; color: #121212; font-weight: bold; }
-        #prompt-display { margin-top: 20px; padding: 15px; background-color: #2c2c2c; border-radius: 4px; border: 1px solid #444; max-height: 300px; overflow-y: auto; display: none; }
-        #prompt-display a { color: #8ab4f8; }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div id="login-section">
-            <h1>Automatizador IA PRO</h1>
-            <form id="loginForm">
-                <div class="form-group"><label for="ra">RA (com dígito e UF)</label><input type="text" id="ra" name="user" required></div>
-                <div class="form-group"><label for="senha">Senha</label><input type="password" id="senha" name="senha" required></div>
-                <button type="submit" id="loginButton">Conectar</button>
-            </form>
-            <p id="status"></p>
-        </div>
+import { Card, CardContent } from "@/components/ui/card"; import { Button } from "@/components/ui/button"; import { BookOpen, Download, GraduationCap } from "lucide-react"; import { motion } from "framer-motion";
 
-        <div id="essay-section">
-            <h2>Selecione a Redação</h2>
-            <ul id="essayList"></ul>
-            <div id="prompt-display"></div>
-            <div class="form-group">
-                <label for="essayText" style="margin-top: 15px;">Texto da Redação:</label>
-                <textarea id="essayText" placeholder="Selecione uma redação para ver a proposta e gerar o texto..." style="min-height: 250px;"></textarea>
-            </div>
-            <button id="generateEssayButton" class="button-secondary" disabled>Gerar Redação com IA 🤖</button>
-            <button id="submitEssayButton" disabled>Enviar Redação (como Rascunho)</button>
-            <p id="submissionStatus"></p>
-        </div>
-    </div>
+export default function EclipseApo() { return ( <div className="min-h-screen bg-gradient-to-b from-black via-purple-950 to-gray-900 text-white font-sans"> {/* Header */} <header className="p-6 text-center border-b border-purple-800 shadow-lg bg-gradient-to-r from-purple-900 to-black"> <div className="flex flex-col items-center gap-2"> <GraduationCap className="w-12 h-12 text-purple-400 animate-bounce" /> <h1 className="text-5xl font-extrabold text-purple-300 tracking-wide drop-shadow-lg"> EclipseApo </h1> <p className="text-lg text-gray-300 italic"> Apostilas escolares modernas para o 7º ano </p> </div> </header>
 
-    <script>
-        let tokenB = null;
-        let essays = [];
-        let selectedTask = { id: null, details: null };
+{/* Main content */}
+  <main className="container mx-auto p-8 grid lg:grid-cols-3 gap-10">
+    {/* Intro */}
+    <motion.div
+      className="lg:col-span-3 text-center"
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+    >
+      <h2 className="text-3xl font-semibold text-purple-400 drop-shadow-md">
+        Apostila Disponível
+      </h2>
+      <p className="text-gray-400 mt-3 max-w-2xl mx-auto">
+        Baixe gratuitamente a apostila completa de <span className="text-purple-300 font-bold">Língua Portuguesa</span> e <span className="text-purple-300 font-bold">Matemática</span> para estudantes do <strong>7º ano</strong>. 
+        Conteúdo atualizado e pronto para apoiar seus estudos.
+      </p>
+    </motion.div>
 
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const statusEl = document.getElementById('status');
-            statusEl.textContent = 'Conectando...';
-            try {
-                const res = await fetch('/api/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ user: e.target.user.value, senha: e.target.senha.value }) });
-                const data = await res.json();
-                if (!res.ok) throw new Error(data.error);
-                
-                tokenB = data.tokenB;
-                essays = data.tarefas; 
-                
-                document.getElementById('login-section').style.display = 'none';
-                displayEssays();
-            } catch (err) { statusEl.textContent = `Falha: ${err.message}`; }
-        });
+    {/* Apostila Card */}
+    <motion.div
+      className="lg:col-span-3 flex justify-center"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8 }}
+    >
+      <Card className="w-full lg:w-2/3 bg-gradient-to-br from-purple-900 via-black to-gray-800 border border-purple-700 shadow-2xl rounded-3xl transform hover:scale-105 transition duration-300 ease-in-out">
+        <CardContent className="p-8 flex flex-col items-center text-center">
+          <BookOpen className="w-14 h-14 text-purple-300 mb-4 animate-pulse" />
+          <h3 className="text-2xl font-bold text-purple-200 mb-3">
+            Apostila Volume 3
+          </h3>
+          <p className="text-gray-300 mb-6 leading-relaxed max-w-md">
+            Conteúdos exclusivos de <strong>Língua Portuguesa</strong> e <strong>Matemática</strong> 
+            cuidadosamente preparados para estudantes do <span className="text-purple-400">7º ano</span>.
+          </p>
+          <Button asChild className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 rounded-2xl shadow-lg font-medium text-lg flex items-center gap-2">
+            <a href="/1261834.pdf" download>
+              <Download className="w-5 h-5" /> Baixar PDF
+            </a>
+          </Button>
+        </CardContent>
+      </Card>
+    </motion.div>
 
-        function displayEssays() {
-            const essaySection = document.getElementById('essay-section');
-            const essayList = document.getElementById('essayList');
-            const pendingEssays = essays.filter(t => t.is_essay === true && t.answer_status !== 'pending');
-            
-            essaySection.style.display = 'block';
-            if (pendingEssays.length === 0) {
-                essayList.innerHTML = '<li>Nenhuma redação pendente encontrada.</li>';
-                return;
-            }
-            essayList.innerHTML = pendingEssays.map(essay => `<li data-task-id="${essay.id}">${essay.title}</li>`).join('');
-            document.querySelectorAll('#essayList li').forEach(li => li.addEventListener('click', handleEssaySelection));
-        }
+    {/* Extra Info */}
+    <motion.div
+      className="lg:col-span-3 mt-10 grid md:grid-cols-2 gap-6"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ delay: 0.9, duration: 1 }}
+    >
+      <div className="bg-purple-950/40 border border-purple-700 rounded-2xl p-6 shadow-md hover:shadow-purple-700/40 transition">
+        <h4 className="text-xl font-semibold text-purple-300 mb-2">📘 Língua Portuguesa</h4>
+        <p className="text-gray-400 text-sm leading-relaxed">
+          Desenvolva suas habilidades de leitura, escrita e interpretação de texto
+          com conteúdos práticos e atividades interativas.
+        </p>
+      </div>
 
-        async function handleEssaySelection(event) {
-            const li = event.currentTarget;
-            const taskId = li.dataset.taskId;
-            document.querySelectorAll('#essayList li').forEach(item => item.classList.remove('selected'));
-            li.classList.add('selected');
+      <div className="bg-purple-950/40 border border-purple-700 rounded-2xl p-6 shadow-md hover:shadow-purple-700/40 transition">
+        <h4 className="text-xl font-semibold text-purple-300 mb-2">📐 Matemática</h4>
+        <p className="text-gray-400 text-sm leading-relaxed">
+          Aprenda conceitos matemáticos de forma clara e objetiva,
+          com exemplos resolvidos e exercícios para praticar.
+        </p>
+      </div>
+    </motion.div>
+  </main>
 
-            const taskData = essays.find(t => t.id == taskId);
-            if (!taskData) { alert('Erro: dados da tarefa não encontrados.'); return; }
+  {/* Footer */}
+  <footer className="p-6 text-center border-t border-purple-800 mt-12 bg-gradient-to-r from-black via-purple-950 to-black">
+    <p className="text-gray-400 text-sm">
+      © 2025 <span className="text-purple-300 font-semibold">EclipseApo</span> - Material didático para o 7º ano.
+    </p>
+  </footer>
+</div>
 
-            const answerId = taskData.answer_id;
-            const publicationTarget = taskData.publication_target;
+); }
 
-            selectedTask = { id: taskId, details: null };
-            document.getElementById('generateEssayButton').disabled = true;
-            document.getElementById('submitEssayButton').disabled = true;
-            const statusEl = document.getElementById('submissionStatus');
-            const promptDisplay = document.getElementById('prompt-display');
-            
-            promptDisplay.style.display = 'none';
-            statusEl.textContent = 'Buscando proposta completa... 📚';
-
-            try {
-                const res = await fetch('/api/get-essay-details', { 
-                    method: 'POST', 
-                    headers: { 'Content-Type': 'application/json' }, 
-                    body: JSON.stringify({ tokenB, taskId, answerId, publicationTarget }) 
-                });
-                const details = await res.json();
-                if (!res.ok) throw new Error(details.error || 'Não foi possível carregar os detalhes.');
-                
-                selectedTask.details = details;
-                statusEl.textContent = 'Proposta carregada! Clique para gerar com a IA.';
-                promptDisplay.style.display = 'block';
-                promptDisplay.innerHTML = `<h3>Proposta e Coletânea:</h3>${details.taskContent}`;
-                document.getElementById('generateEssayButton').disabled = false;
-            } catch (err) {
-                statusEl.textContent = `Falha ao buscar detalhes: ${err.message}`;
-            }
-        }
-
-        document.getElementById('generateEssayButton').addEventListener('click', async () => {
-             if (!selectedTask.id || !selectedTask.details) return;
-            const statusEl = document.getElementById('submissionStatus');
-            const genButton = document.getElementById('generateEssayButton');
-            statusEl.textContent = 'IA escrevendo... 🤖⏳';
-            genButton.disabled = true;
-            try {
-                const res = await fetch('/api/generate-essay', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ promptData: selectedTask.details }) });
-                const data = await res.json();
-                if (!res.ok) throw new Error(data.details || data.error);
-                document.getElementById('essayText').value = data.essay;
-                statusEl.textContent = 'Texto gerado! Revise e envie. ✅';
-                document.getElementById('submitEssayButton').disabled = false;
-            } catch (err) {
-                statusEl.textContent = `Erro da IA: ${err.message} ❌`;
-            } finally {
-                genButton.disabled = false;
-            }
-        });
-
-        document.getElementById('submitEssayButton').addEventListener('click', async () => {
-            const essayText = document.getElementById('essayText').value;
-            const statusEl = document.getElementById('submissionStatus');
-            if (!selectedTask.id || !essayText.trim()) return;
-            statusEl.textContent = 'Salvando rascunho... 🚀';
-            const submitBtn = document.getElementById('submitEssayButton');
-            submitBtn.disabled = true;
-            try {
-                const res = await fetch('/api/submit-essay', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ tokenB, taskId: selectedTask.id, essayText, essayTitle: "" }) });
-                const data = await res.json();
-                if (!res.ok) throw new Error(data.details?.message || data.error);
-                statusEl.textContent = 'Rascunho salvo com sucesso! 🎉';
-            } catch (err) {
-                statusEl.textContent = `Falha ao salvar: ${err.message} ❌`;
-            } finally {
-                submitBtn.disabled = false;
-            }
-        });
-    </script>
-</body>
-                                          </html>
