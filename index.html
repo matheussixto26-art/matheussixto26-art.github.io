@@ -1,83 +1,347 @@
-import { Card, CardContent } from "@/components/ui/card"; import { Button } from "@/components/ui/button"; import { BookOpen, Download, GraduationCap } from "lucide-react"; import { motion } from "framer-motion";
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>EclipseApo — Apostilas 7º Ano</title>
+  <meta name="description" content="EclipseApo — Apostilas escolares (7º ano). Baixe a apostila de Língua Portuguesa e Matemática."/>
+  <link rel="icon" href="data:;base64,=">
 
-export default function EclipseApo() { return ( <div className="min-h-screen bg-gradient-to-b from-black via-purple-950 to-gray-900 text-white font-sans"> {/* Header */} <header className="p-6 text-center border-b border-purple-800 shadow-lg bg-gradient-to-r from-purple-900 to-black"> <div className="flex flex-col items-center gap-2"> <GraduationCap className="w-12 h-12 text-purple-400 animate-bounce" /> <h1 className="text-5xl font-extrabold text-purple-300 tracking-wide drop-shadow-lg"> EclipseApo </h1> <p className="text-lg text-gray-300 italic"> Apostilas escolares modernas para o 7º ano </p> </div> </header>
+  <!-- Fonte (Google Fonts) -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
 
-{/* Main content */}
-  <main className="container mx-auto p-8 grid lg:grid-cols-3 gap-10">
-    {/* Intro */}
-    <motion.div
-      className="lg:col-span-3 text-center"
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
-    >
-      <h2 className="text-3xl font-semibold text-purple-400 drop-shadow-md">
-        Apostila Disponível
-      </h2>
-      <p className="text-gray-400 mt-3 max-w-2xl mx-auto">
-        Baixe gratuitamente a apostila completa de <span className="text-purple-300 font-bold">Língua Portuguesa</span> e <span className="text-purple-300 font-bold">Matemática</span> para estudantes do <strong>7º ano</strong>. 
-        Conteúdo atualizado e pronto para apoiar seus estudos.
-      </p>
-    </motion.div>
+  <style>
+    :root{
+      --purple-900: #2b0b3a;
+      --purple-700: #6f2aa6;
+      --purple-500: #9b59ff;
+      --bg-black: #060606;
+      --muted: #cfcfe6;
+      --card: rgba(255,255,255,0.04);
+      --glass: rgba(255,255,255,0.04);
+      --accent: #7b2be6;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:"Inter",system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;
+      background: linear-gradient(180deg, var(--bg-black) 0%, #0b0211 30%, #0f0812 100%);
+      color: #fff;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      line-height:1.45;
+    }
 
-    {/* Apostila Card */}
-    <motion.div
-      className="lg:col-span-3 flex justify-center"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8 }}
-    >
-      <Card className="w-full lg:w-2/3 bg-gradient-to-br from-purple-900 via-black to-gray-800 border border-purple-700 shadow-2xl rounded-3xl transform hover:scale-105 transition duration-300 ease-in-out">
-        <CardContent className="p-8 flex flex-col items-center text-center">
-          <BookOpen className="w-14 h-14 text-purple-300 mb-4 animate-pulse" />
-          <h3 className="text-2xl font-bold text-purple-200 mb-3">
-            Apostila Volume 3
-          </h3>
-          <p className="text-gray-300 mb-6 leading-relaxed max-w-md">
-            Conteúdos exclusivos de <strong>Língua Portuguesa</strong> e <strong>Matemática</strong> 
-            cuidadosamente preparados para estudantes do <span className="text-purple-400">7º ano</span>.
-          </p>
-          <Button asChild className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 rounded-2xl shadow-lg font-medium text-lg flex items-center gap-2">
-            <a href="/1261834.pdf" download>
-              <Download className="w-5 h-5" /> Baixar PDF
+    /* Container */
+    .wrap{max-width:1100px;margin:0 auto;padding:28px;}
+
+    /* Header / Nav */
+    header.site-header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:18px;
+      margin-bottom:28px;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:14px;
+    }
+    .logo-mark{
+      width:56px;height:56px;border-radius:12px;
+      background: linear-gradient(135deg,var(--purple-700),#23003a);
+      display:flex;align-items:center;justify-content:center;
+      box-shadow:0 6px 20px rgba(107,38,155,0.24), inset 0 -6px 18px rgba(0,0,0,0.25);
+    }
+    .logo-mark svg{width:34px;height:34px}
+    .site-title{font-weight:800; font-size:20px; letter-spacing:0.4px; color:var(--purple-500)}
+    .site-sub{font-size:12px;color:var(--muted);margin-top:2px}
+
+    nav.nav{
+      display:flex;
+      gap:12px;
+      align-items:center;
+    }
+    nav.nav a{
+      color:var(--muted);
+      text-decoration:none;
+      font-weight:600;
+      padding:8px 12px;
+      border-radius:10px;
+      transition:all .18s ease;
+      font-size:14px;
+    }
+    nav.nav a:hover{background:rgba(255,255,255,0.03); color: #fff; transform:translateY(-2px)}
+
+    /* Hero */
+    .hero{
+      background: linear-gradient(135deg, rgba(107,38,155,0.12), rgba(0,0,0,0.12));
+      border:1px solid rgba(123,43,230,0.08);
+      padding:36px;
+      border-radius:18px;
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:18px;
+      align-items:center;
+      margin-bottom:22px;
+      box-shadow: 0 8px 30px rgba(11,2,20,0.6);
+    }
+    .hero-inner{display:flex;flex-direction:column;gap:12px}
+    .hero h1{margin:0;font-size:34px;color:var(--purple-500);line-height:1.02}
+    .hero p.lead{margin:0;color:var(--muted);font-size:15px;max-width:72ch}
+    .cta-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:6px}
+    .btn{
+      display:inline-flex;align-items:center;gap:10px;padding:12px 18px;border-radius:12px;
+      font-weight:700;border:0;cursor:pointer;text-decoration:none;
+      transition:transform .14s ease, box-shadow .14s ease;
+      box-shadow: 0 6px 20px rgba(107,38,155,0.12);
+    }
+    .btn-download{background:linear-gradient(90deg,var(--purple-700),var(--purple-500)); color:white}
+    .btn-preview{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted)}
+
+    .btn-download:hover{transform:translateY(-3px); box-shadow:0 14px 36px rgba(107,38,155,0.2)}
+    .btn-preview:hover{transform:translateY(-3px); color:white; border-color: rgba(123,43,230,0.5)}
+
+    /* Cards grid */
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(3,1fr);
+      gap:18px;
+      margin-bottom:22px;
+    }
+    .card{
+      background:var(--card);
+      border:1px solid rgba(255,255,255,0.04);
+      padding:18px;border-radius:12px; min-height:120px;
+      display:flex;flex-direction:column;gap:10px; justify-content:center;
+    }
+    .card h3{margin:0;color:var(--purple-300);font-size:16px}
+    .card p{margin:0;color:var(--muted);font-size:14px}
+
+    /* PDF preview */
+    .preview-wrap{
+      margin-top:6px;
+      border-radius:12px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,0.04);
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.12));
+      min-height:420px;
+      display:flex;
+      flex-direction:column;
+    }
+    .preview-top{
+      display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:linear-gradient(90deg, rgba(107,38,155,0.06), transparent);
+      border-bottom:1px solid rgba(255,255,255,0.03);
+    }
+    .preview-top .meta{color:var(--muted);font-size:13px}
+    .pdf-frame{
+      flex:1;
+      min-height:360px;
+    }
+    .pdf-frame embed{width:100%;height:100%;display:block;border:0}
+
+    /* Footer */
+    footer.site-footer{
+      margin-top:28px;
+      padding:18px;
+      border-radius:10px;
+      text-align:center;
+      color:var(--muted);
+      font-size:13px;
+      border:1px solid rgba(255,255,255,0.02);
+      background:linear-gradient(180deg, rgba(0,0,0,0.04), transparent);
+    }
+
+    /* Contact box */
+    .contact{
+      margin-top:18px;
+      padding:16px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);
+      background: linear-gradient(180deg, rgba(123,43,230,0.03), rgba(255,255,255,0.01));
+      display:flex;flex-direction:column;gap:10px;
+    }
+    .field{display:flex;flex-direction:column;gap:6px}
+    input[type="text"], input[type="email"], textarea{
+      background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.04);padding:10px;border-radius:8px;color:#fff;
+      outline:none;font-size:14px;
+    }
+    textarea{min-height:100px;resize:vertical}
+    .note{font-size:12px;color:var(--muted)}
+
+    /* Responsive */
+    @media (max-width: 920px){
+      .grid{grid-template-columns: repeat(2,1fr)}
+      header.site-header{flex-direction:column;align-items:flex-start;gap:12px}
+    }
+    @media (max-width:700px){
+      .grid{grid-template-columns: 1fr}
+      .hero h1{font-size:26px}
+      .hero p.lead{font-size:14px}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="site-header" role="banner">
+      <div class="brand" aria-hidden="false">
+        <div class="logo-mark" aria-hidden="true">
+          <!-- simple eclipse/book mark SVG -->
+          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <defs>
+              <linearGradient id="g1" x1="0" x2="1">
+                <stop offset="0" stop-color="#9b59ff"/>
+                <stop offset="1" stop-color="#6f2aa6"/>
+              </linearGradient>
+            </defs>
+            <rect x="2" y="6" width="44" height="36" rx="8" fill="url(#g1)" opacity="0.95"/>
+            <path d="M14 16c3-3 12-3 16 0 4 3 7 10 0 14-7 4-13 2-16 0-3-2-4-8 0-14z" fill="#fff" opacity="0.15"/>
+            <path d="M14 15c3-2.6 11-2.6 14 0 3 2.6 6 8.2 0 11.4-6 3.2-11 1.6-14 0-3-1.6-4-6.8 0-11.4z" fill="#fff" opacity="0.06"/>
+          </svg>
+        </div>
+        <div>
+          <div class="site-title">EclipseApo</div>
+          <div class="site-sub">Apostilas 7º ano — roxo • branco • preto</div>
+        </div>
+      </div>
+
+      <nav class="nav" role="navigation" aria-label="Menu principal">
+        <a href="#apresentacao">Home</a>
+        <a href="#conteudo">Conteúdo</a>
+        <a href="#preview">Visualizar</a>
+        <a href="#contato">Contato</a>
+      </nav>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero" id="apresentacao" aria-labelledby="hero-title">
+      <div class="hero-inner">
+        <h1 id="hero-title">Apostilas completas para o 7º ano — Língua Portuguesa & Matemática</h1>
+        <p class="lead">Material alinhado ao currículo escolar, com resumos, exercícios resolvidos e atividades para estudo e revisão. Baixe gratuitamente e estude offline.</p>
+
+        <div class="cta-row" role="group" aria-label="Ações principais">
+          <!-- Download button -->
+          <a class="btn btn-download" href="/1261834.pdf" download>
+            <!-- download icon -->
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 3v12" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M8 11l4 4 4-4" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M21 21H3" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Baixar PDF
+          </a>
+
+          <a class="btn btn-preview" href="#preview">
+            <!-- preview icon -->
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Visualizar
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Feature / cards -->
+    <section id="conteudo" aria-labelledby="sec-content" style="margin-top:18px;">
+      <h2 id="sec-content" style="color:var(--purple-300); margin:6px 0 12px; font-size:18px">O que tem nesta apostila</h2>
+
+      <div class="grid" role="list">
+        <article class="card" role="listitem" aria-labelledby="card1">
+          <h3 id="card1">📘 Língua Portuguesa</h3>
+          <p>Resumos, análise de texto, sintaxe, exercícios de interpretação, gramática aplicada e atividades de produção textual.</p>
+        </article>
+
+        <article class="card" role="listitem" aria-labelledby="card2">
+          <h3 id="card2">📐 Matemática</h3>
+          <p>Álgebra básica, geometria, medidas e problemas resolvidos passo-a-passo para fixação dos conteúdos.</p>
+        </article>
+
+        <article class="card" role="listitem" aria-labelledby="card3">
+          <h3 id="card3">📝 Exercícios e Revisões</h3>
+          <p>Atividades para praticar o conteúdo de cada aula, com gabarito e explicações detalhadas.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- PDF Preview -->
+    <section id="preview" style="margin-top:18px;">
+      <h2 style="color:var(--purple-300); margin:6px 0 12px; font-size:18px">Pré-visualização — Volume 3</h2>
+
+      <div class="preview-wrap" role="region" aria-label="Visualização do PDF">
+        <div class="preview-top">
+          <div class="meta">
+            Volume 3 — Língua Portuguesa & Matemática • 7º ano
+          </div>
+          <div>
+            <a class="btn btn-download" href="/1261834.pdf" download style="padding:8px 12px;font-size:13px;">
+              <!-- small download icon -->
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="margin-right:6px">
+                <path d="M12 3v12" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M8 11l4 4 4-4" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M21 21H3" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Baixar
             </a>
-          </Button>
-        </CardContent>
-      </Card>
-    </motion.div>
+          </div>
+        </div>
 
-    {/* Extra Info */}
-    <motion.div
-      className="lg:col-span-3 mt-10 grid md:grid-cols-2 gap-6"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ delay: 0.9, duration: 1 }}
-    >
-      <div className="bg-purple-950/40 border border-purple-700 rounded-2xl p-6 shadow-md hover:shadow-purple-700/40 transition">
-        <h4 className="text-xl font-semibold text-purple-300 mb-2">📘 Língua Portuguesa</h4>
-        <p className="text-gray-400 text-sm leading-relaxed">
-          Desenvolva suas habilidades de leitura, escrita e interpretação de texto
-          com conteúdos práticos e atividades interativas.
-        </p>
+        <div class="pdf-frame" role="document" aria-label="Apostila em PDF">
+          <!-- Use embed to show PDF. If browser doesn't show embed, the download link above remains. -->
+          <embed src="/1261834.pdf" type="application/pdf" />
+        </div>
       </div>
 
-      <div className="bg-purple-950/40 border border-purple-700 rounded-2xl p-6 shadow-md hover:shadow-purple-700/40 transition">
-        <h4 className="text-xl font-semibold text-purple-300 mb-2">📐 Matemática</h4>
-        <p className="text-gray-400 text-sm leading-relaxed">
-          Aprenda conceitos matemáticos de forma clara e objetiva,
-          com exemplos resolvidos e exercícios para praticar.
-        </p>
+      <p class="note" style="margin-top:10px;color:var(--muted)">Se a pré-visualização não abrir no seu navegador, clique em "Baixar PDF" para abrir com um leitor de PDF no seu dispositivo.</p>
+    </section>
+
+    <!-- Contact -->
+    <section id="contato" style="margin-top:22px;">
+      <h2 style="color:var(--purple-300); margin:6px 0 12px; font-size:18px">Contato</h2>
+
+      <div class="contact" aria-labelledby="contact-title">
+        <div class="field">
+          <label for="name" style="font-size:13px;color:var(--muted)">Nome</label>
+          <input id="name" type="text" placeholder="Seu nome (opcional)" />
+        </div>
+
+        <div class="field">
+          <label for="email" style="font-size:13px;color:var(--muted)">E-mail</label>
+          <input id="email" type="email" placeholder="seu@exemplo.com (opcional)" />
+        </div>
+
+        <div class="field">
+          <label for="message" style="font-size:13px;color:var(--muted)">Mensagem</label>
+          <textarea id="message" placeholder="Dúvidas, sugestões ou pedidos de outras apostilas..."></textarea>
+        </div>
+
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+          <button class="btn btn-download" id="sendBtn" type="button">
+            Enviar mensagem
+          </button>
+          <div class="note">Obs.: Este formulário é visual — sem backend. Para receber mensagens, conecte a um serviço (ex: Formspree, Netlify Forms) ou me diga se quer que eu inclua integração.</div>
+        </div>
       </div>
-    </motion.div>
-  </main>
+    </section>
 
-  {/* Footer */}
-  <footer className="p-6 text-center border-t border-purple-800 mt-12 bg-gradient-to-r from-black via-purple-950 to-black">
-    <p className="text-gray-400 text-sm">
-      © 2025 <span className="text-purple-300 font-semibold">EclipseApo</span> - Material didático para o 7º ano.
-    </p>
-  </footer>
-</div>
+    <footer class="site-footer" role="contentinfo">
+      © <strong>EclipseApo</strong> — Apostilas para o 7º ano • Desenvolvido por você • Arquivo: <code>Volume 3</code>
+    </footer>
+  </div>
 
-); }
-
+  <script>
+    // Small interaction: fake send behavior (front-end only)
+    document.getElementById('sendBtn').addEventListener('click', function(){
+      const btn = this;
+      btn.disabled = true;
+      btn.textContent = 'Enviando...';
+      setTimeout(() => {
+        alert('Mensagem simulada enviada (sem backend). Se quiser que eu integre com Formspree/Netlify/Google Forms, posso gerar o código para você.');
+        btn.disabled = false;
+        btn.textContent = 'Enviar mensagem';
+      }, 900);
+    });
+  </script>
+</body>
+  </html>
